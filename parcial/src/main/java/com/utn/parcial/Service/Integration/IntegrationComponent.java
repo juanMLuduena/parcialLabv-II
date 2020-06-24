@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -23,8 +24,14 @@ public class IntegrationComponent {
                 .build();
     }
 
-    public ResponseEntity getMostAndLeastUsedTelephoneLineFromApi()
+    public ResponseEntity getMostAndLeastUsedTelephoneLineFromApi() throws RestClientException
     {
+        try{
         return rest.getForEntity(url+"/telephoneLine/MostAndLeastUsed", String.class);
+        }
+        catch(RestClientException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+         }
+
     }
 }
